@@ -119,6 +119,9 @@ function zip(arrays) {
 }
 
 function DrawGraph_jq(aItem, aValue, aInitial, sStyle) {
+	if (aValue.length == 0)
+		return;
+
 	$("#graph").empty();
 
 	$("#chartdiv-wrapper").html('<div id="chartdiv" style="height: 150px; width: 100%;"></div>');
@@ -401,6 +404,9 @@ function DrawPie_swf(iTotal, aItem, aValue) {
 }
 
 function DrawPie_jq(iTotal, aItem, aValue) {
+	if (aValue.length == 0)
+		return;
+
 	// Normalize values
 	var newvalue = [];
 	for (var i = 0; i < aValue.length; ++i)
