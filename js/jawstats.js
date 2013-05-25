@@ -101,7 +101,7 @@ function DisplayBandwidth(iBW) {
   return NumberFormat(iBW, 1) + "G";
 }
 
-function DrawGraph(aItem, aValue, aInitial, sStyle) {
+function DrawGraph_swf(aItem, aValue, aInitial, sStyle) {
   var oGraph = new SWFObject("swf/" + sStyle + "_graph.swf", "SWFgraph", "100%", "100%", "8", "#ffffff");
   oGraph.addParam("wmode", "transparent");
   oGraph.addVariable("sItem", aItem.join(","));
@@ -110,6 +110,75 @@ function DrawGraph(aItem, aValue, aInitial, sStyle) {
   oGraph.addVariable("sColor", g_sColor);
   oGraph.addVariable("sShadowColor", g_sShadowColor);
   oGraph.write("graph");
+}
+
+function zip(arrays) {
+	return arrays[0].map(function(_,i){
+		return arrays.map(function(array){return array[i]})
+	});
+}
+
+function DrawGraph_jq(aItem, aValue, aInitial, sStyle) {
+	$("#graph").empty();
+
+	$("#chartdiv-wrapper").html('<div id="chartdiv" style="height: 150px; width: 100%;"></div>');
+	var zipped = zip([aItem, aValue]);
+	var series_opts = {pointLabels: { show: true }};
+	if (sStyle == "bar")
+	{
+		series_opts['color'] = "#BCCBDB";
+		series_opts['shadow'] = false;
+		series_opts['fillAndStroke'] = true;
+		series_opts['strokeStyle'] = "#515356";
+		series_opts['renderer'] = $.jqplot.BarRenderer;
+		series_opts['rendererOptions'] = {barMargin: 2, shadowDepth: 2};
+	}
+	else
+	{
+		series_opts['showMarker'] = true;
+		series_opts['fill'] = true;
+		series_opts['fillAndStroke'] = true;
+		series_opts['fillColor'] = "#C0CBDA";
+		series_opts['fillAplha'] = 1.0;
+		series_opts['color'] = "#9D9D7F";
+		series_opts['lineWidth'] = 4;
+		series_opts['markerOptions'] = {
+				lineWidth: 4,
+				color: "#47473D",
+				size: 9.0,
+				shadow: false,
+		};
+		series_opts['rendererOptions'] = {sliceMargin: 5};
+	}
+
+	var plot = $.jqplot('chartdiv', [aValue],
+			{
+				seriesDefaults: series_opts,
+				series: [{pointLabels: {show: aInitial.length, labels: aInitial}}],
+				axes: {
+					xaxis: {renderer: $.jqplot.CategoryAxisRenderer, ticks: aItem},
+					yaxis: {min: 0, max: Math.round(Math.max.apply(null, aValue) * 1.3)}
+				},
+				highlighter: { showMarker: sStyle != "bar", show: true, tooltipAxes: 'y', tooltipLocation: 'w'},
+			});
+
+	$('#graph').append($('#chartdiv'));
+	$("#graph").css("padding-bottom", "15px");
+}
+
+var g_aItem;
+var g_aValue;
+var g_aInitial;
+var g_sStyle;
+function DrawGraph(aItem, aValue, aInitial, sStyle) {
+	g_aItem = aItem;
+	g_aValue = aValue;
+	g_aInitial = aInitial;
+	g_sStyle = sStyle;
+	//DrawGraph_swf(aItem, aValue, aInitial, sStyle);
+	DrawGraph_jq(aItem, aValue, aInitial, sStyle);
+
+	console.log("To change back to SWF: DrawGraph_swf(g_aItem, g_aValue, g_aInitial, g_sStyle);");
 }
 
 function DrawGraph_AllMonths() {
@@ -320,7 +389,7 @@ case "searches":
 	});
 }
 
-function DrawPie(iTotal, aItem, aValue) {
+function DrawPie_swf(iTotal, aItem, aValue) {
   var oPie = new SWFObject("swf/pie.swf", "SWFpie", "100%", "100%", "8", "#ffffff");
   oPie.addParam("wmode", "transparent");
   oPie.addVariable("sTotal", iTotal);
@@ -329,6 +398,51 @@ function DrawPie(iTotal, aItem, aValue) {
   oPie.addVariable("sColor", g_sColor);
   oPie.addVariable("sShadowColor", g_sShadowColor);
   oPie.write("pie");
+}
+
+function DrawPie_jq(iTotal, aItem, aValue) {
+	// Normalize values
+	var newvalue = [];
+	for (var i = 0; i < aValue.length; ++i)
+		newvalue[i] = aValue[i] / iTotal;
+	var data = zip([aItem, newvalue]);
+
+	$("#pie").empty();
+	$("#chartdiv-wrapper").html('<div id="chartdiv" style="height: 380px; width: 205px;"></div>');
+
+	var plot1 = jQuery.jqplot ('chartdiv', [data],
+		{
+			seriesColors: ["#86b4ab", "#9e9e7d", "#ab812e", "#cccc9f",
+				"#a0acba", "#8c8c85", "#e2e2d8"],
+			seriesDefaults: {
+				// Make this a pie chart.
+				renderer: jQuery.jqplot.PieRenderer,
+				rendererOptions: {
+					// Put data labels on the pie slices.
+					// By default, labels show the percentage of the slice.
+					showDataLabels: true
+				},
+				highlighter: { show: true }
+			},
+			legend: { show:true, location: 's' },
+			grid: {borderWidth:0, shadow: false, background: "#fff", drawBorder: false},
+			axesDefaults: {},
+			gridPadding: { top: 0, right: 0, bottom: 0, left: 0 },
+		}
+	);
+	$('#pie').append($('#chartdiv'));
+	$("#pie").css("padding-bottom", "15px");
+}
+
+var g_iTotal;
+function DrawPie(iTotal, aItem, aValue) {
+	g_aItem = aItem;
+	g_aValue = aValue;
+	g_iTotal = iTotal;
+	//DrawPie_swf(iTotal, aItem, aValue);
+	DrawPie_jq(iTotal, aItem, aValue);
+
+	console.log("To change back to SWF: DrawPie_swf(g_iTotal, g_aItem, g_aValue);");
 }
 
 function DrawPie_Browser(sPage) {

@@ -122,6 +122,15 @@
 
   <script type="text/javascript" src="js/constants.js?<?php echo $gc_sJavascriptVersion ?>"></script>
   <script type="text/javascript" src="js/jawstats.js?<?php echo $gc_sJavascriptVersion ?>"></script>
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/jquery.tablesorter.js"></script>
+  <script language="javascript" type="text/javascript" src="js/jqplot/jquery.jqplot.min.js"></script>
+  <script type="text/javascript" language="javascript" src="js/jqplot/plugins/jqplot.categoryAxisRenderer.js"></script>
+  <script type="text/javascript" src="js/jqplot/plugins/jqplot.highlighter.js"></script>
+  <script type="text/javascript" src="js/jqplot/plugins/jqplot.barRenderer.min.js"></script>
+  <script type="text/javascript" src="js/jqplot/plugins/jqplot.pieRenderer.min.js"></script>
+  <script type="text/javascript" src="js/jqplot/plugins/jqplot.pointLabels.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="js/jqplot/jquery.jqplot.css" />
   <script type="text/javascript">
     var g_sConfig = "<?php echo $g_sConfig ?>";
     var g_iYear = <?php echo date("Y", $g_aLogFiles[$g_iThisLog][0]) ?>;
@@ -243,6 +252,7 @@
   </div>
   <div id="main">
     <div class="container">
+      <div id="chartdiv-wrapper"></div>
       <div id="content">&nbsp;</div>
       <div id="footer">
         <?php echo DrawFooter(); ?>
