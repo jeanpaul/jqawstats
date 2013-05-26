@@ -127,6 +127,8 @@ function DrawGraph_jq(aItem, aValue, aInitial, sStyle) {
 	$("#chartdiv-wrapper").html('<div id="chartdiv" style="height: 150px; width: 100%;"></div>');
 	var zipped = zip([aItem, aValue]);
 	var series_opts = {pointLabels: { show: true }};
+	var axes;
+	var series;
 	if (sStyle == "bar")
 	{
 		series_opts['color'] = "#BCCBDB";
@@ -154,15 +156,26 @@ function DrawGraph_jq(aItem, aValue, aInitial, sStyle) {
 		series_opts['rendererOptions'] = {sliceMargin: 5};
 	}
 
-	var plot = $.jqplot('chartdiv', [aValue],
+	if (sStyle == "time") {
+		axes = {
+			xaxis: {pad: 0, tickInterval: 1},
+			yaxis: {pad: 0}
+		}
+		series = [zipped];
+	} else {
+		axes = {
+			xaxis: {renderer: $.jqplot.CategoryAxisRenderer, ticks: aItem},
+			yaxis: {min: 0, max: Math.round(Math.max.apply(null, aValue) * 1.3)}
+		}
+		series = [aValue];
+	}
+
+	var plot = $.jqplot('chartdiv', series,
 			{
 				seriesDefaults: series_opts,
 				series: [{pointLabels: {show: aInitial.length, labels: aInitial}}],
-				axes: {
-					xaxis: {renderer: $.jqplot.CategoryAxisRenderer, ticks: aItem},
-					yaxis: {min: 0, max: Math.round(Math.max.apply(null, aValue) * 1.3)}
-				},
-				highlighter: { showMarker: sStyle != "bar", show: true, tooltipAxes: 'y', tooltipLocation: 'w'},
+				axes: axes,
+				highlighter: { showMarker: sStyle != "bar", show: true, tooltipAxes: 'y', tooltipLocation: sStyle == 'bar' ? 'w' : 'n'},
 			});
 
 	$('#graph').append($('#chartdiv'));
@@ -228,14 +241,13 @@ function DrawGraph_Time() {
   var aValue = [];
   for (var iRow in oStatistics.oTime.aData) {
     oRow = oStatistics.oTime.aData[iRow];
-    sHour = oRow.iHour;
-    if (oRow.iHour < 10) {
-      sHour = ("0" + sHour)
-    }
-    aItem.push(sHour);
+    aItem.push(oRow.iHour + 1);
     aValue.push(oRow.iPages);
   }
-  DrawGraph(aItem, aValue, [], "line");
+  // Add 'zero' hour == last item to make the graph 'loop'
+  aItem.unshift(0);
+  aValue.unshift(aValue.slice(-1)[0]);
+  DrawGraph(aItem, aValue, [], "time");
 }
 
 function DrawPage(sPage) {
