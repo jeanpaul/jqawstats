@@ -142,7 +142,7 @@ function DrawGraph_jq(aItem, aValue, aInitial, sStyle) {
 		series_opts['fill'] = true;
 		series_opts['fillAndStroke'] = true;
 		series_opts['fillColor'] = "#C0CBDA";
-		series_opts['fillAplha'] = 1.0;
+		series_opts['fillAlpha'] = 0.7;
 		series_opts['color'] = "#9D9D7F";
 		series_opts['lineWidth'] = 4;
 		series_opts['markerOptions'] = {
