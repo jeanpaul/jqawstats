@@ -131,6 +131,7 @@
   <script type="text/javascript" src="js/jqplot/plugins/jqplot.pieRenderer.min.js"></script>
   <script type="text/javascript" src="js/jqplot/plugins/jqplot.pointLabels.min.js"></script>
   <link rel="stylesheet" type="text/css" href="js/jqplot/jquery.jqplot.css" />
+  <link rel="stylesheet" type="text/css" href="css/jsawstats.css" />
   <script type="text/javascript">
     var g_sConfig = "<?php echo $g_sConfig ?>";
     var g_iYear = <?php echo date("Y", $g_aLogFiles[$g_iThisLog][0]) ?>;
