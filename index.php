@@ -149,7 +149,6 @@
     echo "  <script type=\"text/javascript\" src=\"languages/" . $sLanguageCode . ".js\"></script>\n";
   }
 ?>
-  <script type="text/javascript" src="http://version.jawstats.com/version.js"></script>
 </head>
 
 <body>
