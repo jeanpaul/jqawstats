@@ -162,6 +162,14 @@ function DrawGraph_jq(aItem, aValue, aInitial, sStyle) {
 			yaxis: {pad: 0}
 		}
 		series = [zipped];
+	} else if (sStyle == "allmonths") {
+		xTickOpts = { formatString: "%b '%y" };
+		yTickOpts = { formatString: "%d" };
+		axes = {
+			xaxis: {renderer: $.jqplot.DateAxisRenderer, tickOptions: xTickOpts},
+			yaxis: {pad: 0, tickOptions: yTickOpts},
+		}
+		series = [zipped];
 	} else {
 		axes = {
 			xaxis: {renderer: $.jqplot.CategoryAxisRenderer, ticks: aItem},
@@ -175,7 +183,7 @@ function DrawGraph_jq(aItem, aValue, aInitial, sStyle) {
 				seriesDefaults: series_opts,
 				series: [{pointLabels: {show: aInitial.length, labels: aInitial}}],
 				axes: axes,
-				highlighter: { showMarker: sStyle != "bar", show: true, tooltipAxes: 'y', tooltipLocation: sStyle == 'bar' ? 'w' : 'n'},
+				highlighter: { showMarker: sStyle != "bar", show: true, tooltipAxes: sStyle == 'allmonths' ? 'xy' : 'y', tooltipLocation: sStyle == 'bar' ? 'w' : 'n'},
 			});
 
 	$('#graph').append($('#chartdiv'));
@@ -201,11 +209,11 @@ function DrawGraph_AllMonths() {
   var aItem = [];
   var aValue = [];
   for (var iIndex in oStatistics.oAllMonths.aData) {
-    aItem.push(Lang(gc_aMonthName[oStatistics.oAllMonths.aData[iIndex].dtDate.getMonth()].substr(0,3)) + " '" +
-               (oStatistics.oAllMonths.aData[iIndex].dtDate.getFullYear()).toString().substr(2));
+    aItem.push(oStatistics.oAllMonths.aData[iIndex].dtDate.getFullYear() + "-" +
+               (oStatistics.oAllMonths.aData[iIndex].dtDate.getMonth() + 1) + "-01 00:00:00");
     aValue.push(oStatistics.oAllMonths.aData[iIndex].iVisits);
   }
-  DrawGraph(aItem, aValue, [], "line");
+  DrawGraph(aItem, aValue, [], "allmonths");
 }
 
 function DrawGraph_ThisMonth() {
