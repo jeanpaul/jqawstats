@@ -126,7 +126,9 @@
   <script type="text/javascript" src="js/jquery.tablesorter.js"></script>
   <script language="javascript" type="text/javascript" src="js/jqplot/jquery.jqplot.min.js"></script>
   <script type="text/javascript" language="javascript" src="js/jqplot/plugins/jqplot.categoryAxisRenderer.js"></script>
+  <script type="text/javascript" src="js/jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
   <script type="text/javascript" src="js/jqplot/plugins/jqplot.highlighter.js"></script>
+  <script type="text/javascript" src="js/jqplot/plugins/jqplot.canvasOverlay.js"></script>
   <script type="text/javascript" src="js/jqplot/plugins/jqplot.barRenderer.min.js"></script>
   <script type="text/javascript" src="js/jqplot/plugins/jqplot.pieRenderer.min.js"></script>
   <script type="text/javascript" src="js/jqplot/plugins/jqplot.pointLabels.min.js"></script>
