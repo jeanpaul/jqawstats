@@ -129,6 +129,7 @@ function DrawGraph_jq(aItem, aValue, aInitial, sStyle) {
 	var series_opts = {pointLabels: { show: true }};
 	var axes;
 	var series;
+	var objects;
 	if (sStyle == "bar")
 	{
 		series_opts['color'] = "#BCCBDB";
@@ -155,6 +156,21 @@ function DrawGraph_jq(aItem, aValue, aInitial, sStyle) {
 		};
 		series_opts['rendererOptions'] = {sliceMargin: 5};
 	}
+
+	var sum = 0.0;
+	for (var i = 0; i < aValue.length; ++i) {
+		sum += parseInt(aValue[i]);
+	}
+	var avg = sum / aValue.length;
+	var objects = [
+		{horizontalLine: {
+			name: 'average',
+			y: avg,
+			lineWidth: 0.5,
+			shadow: false,
+			xOffset: 0,
+		}}
+	];
 
 	if (sStyle == "time") {
 		axes = {
@@ -213,6 +229,7 @@ function DrawGraph_jq(aItem, aValue, aInitial, sStyle) {
 				seriesDefaults: series_opts,
 				series: [{pointLabels: {show: aInitial.length, labels: aInitial}}],
 				axes: axes,
+				canvasOverlay: { show: true, objects: objects },
 				highlighter: { showMarker: sStyle != "bar", show: true, tooltipAxes: sStyle == 'allmonths' ? 'xy' : 'y', tooltipLocation: sStyle == 'bar' ? 'w' : 'n'},
 			});
 
