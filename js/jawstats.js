@@ -165,9 +165,27 @@ function DrawGraph_jq(aItem, aValue, aInitial, sStyle) {
 	} else if (sStyle == "allmonths") {
 		xTickOpts = { formatString: "%b '%y" };
 		yTickOpts = { formatString: "%d" };
+
+		/* The following is a bit tricky: we are not happy with jqplot's
+		 * default max range calculation, so we wrote our own. The result
+		 * is max values of 'round' numbers, but not too far from the actual
+		 * max to create lots of empty space. The algorith below is written in
+		 * separate statements for ease-of-reading.
+		 */
+		// Take the max value and add some padding
+		var maxVal = Math.max.apply(null, aValue) * 1.1;
+		// Get the order of magnitude (base 10)
+		var log10max = Math.log(maxVal) / Math.LN10;
+		// floor the order of magnitude and raise it to the power of 10
+		var factor = Math.pow(10, Math.floor(log10max));
+		// final step, use the raised value and the max value to get the first
+		// digit and multiply that with the raised value to get a nice round
+		// number (one that is above the maxVal).
+		var max = factor * Math.ceil(maxVal / factor);
+
 		axes = {
 			xaxis: {renderer: $.jqplot.DateAxisRenderer, tickOptions: xTickOpts},
-			yaxis: {pad: 0, tickOptions: yTickOpts},
+			yaxis: {min: 0, max: max, tickOptions: yTickOpts},
 		}
 		series = [zipped];
 	} else {
