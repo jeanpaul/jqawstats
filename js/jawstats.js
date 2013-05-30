@@ -189,9 +189,21 @@ function DrawGraph_jq(aItem, aValue, aInitial, sStyle) {
 		}
 		series = [zipped];
 	} else {
+		// Take the max value and add some padding (more than allmonths because
+		// there is a label above the bar)
+		var maxVal = Math.max.apply(null, aValue) * 1.3;
+		// Get the order of magnitude (base 10)
+		var log10max = Math.log(maxVal) / Math.LN10;
+		// floor the order of magnitude and raise it to the power of 10
+		var factor = Math.pow(10, Math.floor(log10max));
+		// final step, use the raised value and the max value to get the first
+		// digit and multiply that with the raised value to get a nice round
+		// number (one that is above the maxVal).
+		var max = factor * Math.ceil(maxVal / factor);
+
 		axes = {
 			xaxis: {renderer: $.jqplot.CategoryAxisRenderer, ticks: aItem},
-			yaxis: {min: 0, max: Math.round(Math.max.apply(null, aValue) * 1.3)}
+			yaxis: {min: 0, max: max},
 		}
 		series = [aValue];
 	}
