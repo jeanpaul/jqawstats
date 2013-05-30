@@ -129,6 +129,7 @@ function DrawGraph_jq(aItem, aValue, aInitial, sStyle) {
 	var series_opts = {pointLabels: { show: true }};
 	var axes;
 	var series;
+	var objects;
 	if (sStyle == "bar")
 	{
 		series_opts['color'] = "#BCCBDB";
@@ -156,16 +157,69 @@ function DrawGraph_jq(aItem, aValue, aInitial, sStyle) {
 		series_opts['rendererOptions'] = {sliceMargin: 5};
 	}
 
+	var sum = 0.0;
+	for (var i = 0; i < aValue.length; ++i) {
+		sum += parseInt(aValue[i]);
+	}
+	var avg = sum / aValue.length;
+	var objects = [
+		{horizontalLine: {
+			name: 'average',
+			y: avg,
+			lineWidth: 0.5,
+			shadow: false,
+			xOffset: 0,
+		}}
+	];
+
 	if (sStyle == "time") {
 		axes = {
 			xaxis: {pad: 0, tickInterval: 1},
 			yaxis: {pad: 0}
 		}
 		series = [zipped];
+	} else if (sStyle == "allmonths") {
+		xTickOpts = { formatString: "%b '%y" };
+		yTickOpts = { formatString: "%d" };
+
+		/* The following is a bit tricky: we are not happy with jqplot's
+		 * default max range calculation, so we wrote our own. The result
+		 * is max values of 'round' numbers, but not too far from the actual
+		 * max to create lots of empty space. The algorith below is written in
+		 * separate statements for ease-of-reading.
+		 */
+		// Take the max value and add some padding
+		var maxVal = Math.max.apply(null, aValue) * 1.1;
+		// Get the order of magnitude (base 10)
+		var log10max = Math.log(maxVal) / Math.LN10;
+		// floor the order of magnitude and raise it to the power of 10
+		var factor = Math.pow(10, Math.floor(log10max));
+		// final step, use the raised value and the max value to get the first
+		// digit and multiply that with the raised value to get a nice round
+		// number (one that is above the maxVal).
+		var max = factor * Math.ceil(maxVal / factor);
+
+		axes = {
+			xaxis: {renderer: $.jqplot.DateAxisRenderer, tickOptions: xTickOpts},
+			yaxis: {min: 0, max: max, tickOptions: yTickOpts},
+		}
+		series = [zipped];
 	} else {
+		// Take the max value and add some padding (more than allmonths because
+		// there is a label above the bar)
+		var maxVal = Math.max.apply(null, aValue) * 1.3;
+		// Get the order of magnitude (base 10)
+		var log10max = Math.log(maxVal) / Math.LN10;
+		// floor the order of magnitude and raise it to the power of 10
+		var factor = Math.pow(10, Math.floor(log10max));
+		// final step, use the raised value and the max value to get the first
+		// digit and multiply that with the raised value to get a nice round
+		// number (one that is above the maxVal).
+		var max = factor * Math.ceil(maxVal / factor);
+
 		axes = {
 			xaxis: {renderer: $.jqplot.CategoryAxisRenderer, ticks: aItem},
-			yaxis: {min: 0, max: Math.round(Math.max.apply(null, aValue) * 1.3)}
+			yaxis: {min: 0, max: max},
 		}
 		series = [aValue];
 	}
@@ -175,7 +229,8 @@ function DrawGraph_jq(aItem, aValue, aInitial, sStyle) {
 				seriesDefaults: series_opts,
 				series: [{pointLabels: {show: aInitial.length, labels: aInitial}}],
 				axes: axes,
-				highlighter: { showMarker: sStyle != "bar", show: true, tooltipAxes: 'y', tooltipLocation: sStyle == 'bar' ? 'w' : 'n'},
+				canvasOverlay: { show: true, objects: objects },
+				highlighter: { showMarker: sStyle != "bar", show: true, tooltipAxes: sStyle == 'allmonths' ? 'xy' : 'y', tooltipLocation: sStyle == 'bar' ? 'w' : 'n'},
 			});
 
 	$('#graph').append($('#chartdiv'));
@@ -201,11 +256,11 @@ function DrawGraph_AllMonths() {
   var aItem = [];
   var aValue = [];
   for (var iIndex in oStatistics.oAllMonths.aData) {
-    aItem.push(Lang(gc_aMonthName[oStatistics.oAllMonths.aData[iIndex].dtDate.getMonth()].substr(0,3)) + " '" +
-               (oStatistics.oAllMonths.aData[iIndex].dtDate.getFullYear()).toString().substr(2));
+    aItem.push(oStatistics.oAllMonths.aData[iIndex].dtDate.getFullYear() + "-" +
+               (oStatistics.oAllMonths.aData[iIndex].dtDate.getMonth() + 1) + "-01 00:00:00");
     aValue.push(oStatistics.oAllMonths.aData[iIndex].iVisits);
   }
-  DrawGraph(aItem, aValue, [], "line");
+  DrawGraph(aItem, aValue, [], "allmonths");
 }
 
 function DrawGraph_ThisMonth() {
