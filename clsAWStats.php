@@ -226,7 +226,8 @@
   }
 
   function DrawFooter() {
-    $aString = explode("_", str_replace("]", "]_", str_replace("[", "_[", Lang("Powered by [AWSTART]AWStats[END]. Made beautiful by [JAWSTART]JAWStats Web Statistics and Analytics[END]."))));
+    $aString = explode("_", str_replace("]", "]_", str_replace("[", "_[", Lang("Powered by [AWSTART]AWStats[END]. Made beautiful by [JAWSTART]JAWStats Web Statistics and Analytics[END]") . 
+               " and [JQAWSTART]jQAWStats[END]")));
     for ($i = 0; $i <count($aString); $i++) {
       if ((strlen(trim($aString[$i])) > 0) && (substr($aString[$i], 0, 1) != "[") && (substr($aString[$i + 1], 0, 5) != "[END]")) {
         $aString[$i] = ("<span>" . $aString[$i] . "</span>");
@@ -240,6 +241,9 @@
             break;
           case "[JAWSTART]":
             $aString[$i] = "<a href=\"http://www.jawstats.com/\" target=\"_blank\">";
+            break;
+          case "[JQAWSTART]":
+            $aString[$i] = "<a href=\"http://github.com/jeanpaul/jqawstats\" target=\"_blank\">";
             break;
         }
       }

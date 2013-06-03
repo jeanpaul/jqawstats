@@ -118,11 +118,16 @@ function zip(arrays) {
 	});
 }
 
-function DrawGraph_jq(aItem, aValue, aInitial, sStyle) {
+function DrawGraph_jq(aItem, aValue, aInitial, sStyle, width) {
 	if (aValue.length == 0)
 		return;
 
 	$("#graph").empty();
+	if (width == null) {
+		width = '100%';
+	}
+	$("#chartdiv-wrapper").css.width = width;
+	$("#chartdiv-wrapper").width(width);
 
 	$("#chartdiv-wrapper").html('<div id="chartdiv" style="height: 150px; width: 100%;"></div>');
 	var zipped = zip([aItem, aValue]);
@@ -130,7 +135,8 @@ function DrawGraph_jq(aItem, aValue, aInitial, sStyle) {
 	var axes;
 	var series;
 	var objects;
-	if (sStyle == "bar")
+	var gridPadding;
+	if (sStyle == "bar" || sStyle == "bar-empty")
 	{
 		series_opts['color'] = "#BCCBDB";
 		series_opts['shadow'] = false;
@@ -221,6 +227,13 @@ function DrawGraph_jq(aItem, aValue, aInitial, sStyle) {
 			xaxis: {renderer: $.jqplot.CategoryAxisRenderer, ticks: aItem},
 			yaxis: {min: 0, max: max},
 		}
+		if (sStyle == "bar-empty") {
+			axes['yaxis']['showTickMarks'] = false;
+			axes['yaxis']['showTicks'] = false;
+			axes['xaxis']['showTickMarks'] = false;
+			axes['xaxis']['showTicks'] = false;
+			gridPadding = { left: 0, top: 0, right: 0, bottom: 0 };
+		}
 		series = [aValue];
 	}
 
@@ -231,6 +244,7 @@ function DrawGraph_jq(aItem, aValue, aInitial, sStyle) {
 				axes: axes,
 				canvasOverlay: { show: true, objects: objects },
 				highlighter: { showMarker: sStyle != "bar", show: true, tooltipAxes: sStyle == 'allmonths' ? 'xy' : 'y', tooltipLocation: sStyle == 'bar' ? 'w' : 'n'},
+				gridPadding: gridPadding,
 			});
 
 	$('#graph').append($('#chartdiv'));
@@ -241,13 +255,13 @@ var g_aItem;
 var g_aValue;
 var g_aInitial;
 var g_sStyle;
-function DrawGraph(aItem, aValue, aInitial, sStyle) {
+function DrawGraph(aItem, aValue, aInitial, sStyle, width) {
 	g_aItem = aItem;
 	g_aValue = aValue;
 	g_aInitial = aInitial;
 	g_sStyle = sStyle;
 	//DrawGraph_swf(aItem, aValue, aInitial, sStyle);
-	DrawGraph_jq(aItem, aValue, aInitial, sStyle);
+	DrawGraph_jq(aItem, aValue, aInitial, sStyle, width);
 
 	console.log("To change back to SWF: DrawGraph_swf(g_aItem, g_aValue, g_aInitial, g_sStyle);");
 }
@@ -2118,7 +2132,16 @@ function Misc_ThisMonthCalendar(sHeadline, sSubMenu, sDataItem) {
                      SafeDivide(aDay[5].iTotal, aDay[5].iCount),
                      SafeDivide(aDay[6].iTotal, aDay[6].iCount),
                      SafeDivide(aDay[0].iTotal, aDay[0].iCount)];
-  DrawGraph(["","","","","","",""], aGraphValue, aGraphItem, "bar");
+
+  DrawGraph_Delayed(["","","","","","",""], aGraphValue, aGraphItem, "bar-empty", 100);
+}
+
+function DrawGraph_Delayed(aItem, aValue, aInitial, sStyle, delay) {
+	/* Draw graph delayed but set the width to the width of the parent */
+	setTimeout(function() {
+			var w = $("#graph").width();
+			DrawGraph(aItem, aValue, aInitial, sStyle, w);
+		}, delay);
 }
 
 function PageLayout_AllMonths(sPage) {
