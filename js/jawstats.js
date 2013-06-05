@@ -1654,7 +1654,19 @@ function DrawTable_Robots() {
                       sDate.substr(8,2),
                       sDate.substr(10,2),
                       sDate.substr(12,2));
-    aHTML.push("<tr>" +
+    if (isNaN(dtDate)) {
+        aHTML.push("<tr>" +
+               "<td>" + oStatistics.oRobots.aData[iRow].sRobot + "</td>" +
+               "<td class=\"right\">-</td>" +
+               "<td class=\"right\">-</td>" +
+               "<td class=\"right\">-</td>" +
+               "<td class=\"right\">-</td>" +
+               "<td class=\"right\">AWStats file parse error</td>" +
+               "<td class=\"right\">-</td>" +
+               "<td class=\"noborder right\">0</td>" +
+               "</tr>\n");
+    } else {
+        aHTML.push("<tr>" +
                "<td>" + oStatistics.oRobots.aData[iRow].sRobot + "</td>" +
                "<td class=\"right\">" + NumberFormat(oStatistics.oRobots.aData[iRow].iHits, 0) + "</td>" +
                "<td class=\"right\">" + ((oStatistics.oRobots.aData[iRow].iHits / iTotalHits) * 100).toFixed(1) + "%</td>" +
@@ -1662,8 +1674,9 @@ function DrawTable_Robots() {
                "<td class=\"right\">" + ((oStatistics.oRobots.aData[iRow].iBW / iTotalBW) * 100).toFixed(1) + "%</td>" +
                "<td class=\"right\"><span class=\"hidden\">" + sDate + "</span>" + dtDate.getDate() + " " + Lang(gc_aMonthName[dtDate.getMonth()].substr(0,3)) + " '" + dtDate.getFullYear().toString().substr(2) + " " + AddLeadingZero(dtDate.getHours(), 2) + ":" + AddLeadingZero(dtDate.getMinutes(), 2) + "</td>" +
                "<td class=\"right\">" + NumberFormat(oStatistics.oRobots.aData[iRow].iRobotsTXT, 0) + "</td>" +
-			         "<td class=\"noborder right\">" + (SafeDivide(oStatistics.oRobots.aData[iRow].iRobotsTXT, iTotalRobotsTXT) * 100).toFixed(1) + "%</td>" +
+               "<td class=\"noborder right\">" + (SafeDivide(oStatistics.oRobots.aData[iRow].iRobotsTXT, iTotalRobotsTXT) * 100).toFixed(1) + "%</td>" +
                "</tr>\n");
+    }
   }
 
   // output
