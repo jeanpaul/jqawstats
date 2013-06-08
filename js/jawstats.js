@@ -529,7 +529,7 @@ function DrawPie_jq(iTotal, aItem, aValue) {
 			});
 	$("#chartdiv").bind("jqplotDataUnhighlight",
 			function(ev, seriesIndex, pointIndex, data) {
-				var table = $("tr.eqplot-table-legend");
+				var table = $("tr.jqplot-table-legend");
 				table.removeClass("legend-row-highlighted");
 				table.children(".jqplot-table-legend-label").removeClass("legend-text-highlighted");
 			});
