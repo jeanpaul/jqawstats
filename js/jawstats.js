@@ -163,11 +163,14 @@ function DrawGraph_jq(aItem, aValue, aInitial, sStyle, width) {
 		series_opts['rendererOptions'] = {sliceMargin: 5};
 	}
 
-	var sum = 0.0;
+	var sum = 0.0, samples = 0;
 	for (var i = 0; i < aValue.length; ++i) {
-		sum += parseInt(aValue[i]);
+		if (aValue[i] != null) {
+			sum += parseInt(aValue[i]);
+			samples++;
+		}
 	}
-	var avg = sum / aValue.length;
+	var avg = sum / samples;
 	var objects = [
 		{horizontalLine: {
 			name: 'average',
@@ -287,7 +290,7 @@ function DrawGraph_ThisMonth() {
   var iDayOfWeek = (new Date(g_iYear, (g_iMonth - 1), 1)).getDay();
   for (var iDay = 0; iDay < iDaysInMonth; iDay++) {
     aItem.push(Lang((iDay + 1) + DateSuffix(iDay + 1)));
-    aValue.push(0);
+    aValue.push(null);
     aInitial.push(Lang(gc_aDayName[iDayOfWeek].substr(0, 3)));
 
     // day of week
