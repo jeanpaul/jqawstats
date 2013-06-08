@@ -2,3 +2,9 @@
 	background-color: lightyellow;
 	z-index: 100;
 }
+
+table.jqplot-table-legend { border-collapse: collapse; padding-bottom: 0; }
+/*div.jqplot-table-legend-swatch-outline { border: none; }*/
+tr.jqplot-table-legend td { padding: 2px; }
+.legend-row-highlighted { background-color: #666666; }
+.legend-text-highlighted { color: #ffffff; }

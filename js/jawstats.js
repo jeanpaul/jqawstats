@@ -517,6 +517,22 @@ function DrawPie_jq(iTotal, aItem, aValue) {
 			gridPadding: { top: 0, right: 0, bottom: 0, left: 0 },
 		}
 	);
+
+	// via http://www.jqplot.com/deploy/dist/examples/kcp_area.html
+	$("#chartdiv").bind("jqplotDataHighlight",
+			function(ev, seriesIndex, pointIndex, data) {
+				var table = $('tr.jqplot-table-legend');
+				table.removeClass('legend-row-highlighted');
+				table.children('.jqplot-table-legend-label').removeClass('legend-text-highlighted');
+				table.eq(pointIndex).addClass('legend-row-highlighted');
+				table.eq(pointIndex).children('.jqplot-table-legend-label').addClass('legend-text-highlighted');
+			});
+	$("#chartdiv").bind("jqplotDataUnhighlight",
+			function(ev, seriesIndex, pointIndex, data) {
+				var table = $("tr.eqplot-table-legend");
+				table.removeClass("legend-row-highlighted");
+				table.children(".jqplot-table-legend-label").removeClass("legend-text-highlighted");
+			});
 	$('#pie').append($('#chartdiv'));
 	$("#pie").css("padding-bottom", "15px");
 }
