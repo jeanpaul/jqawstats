@@ -3,8 +3,6 @@
 	z-index: 100;
 }
 
-table.jqplot-table-legend { border-collapse: collapse; padding-bottom: 0; }
-/*div.jqplot-table-legend-swatch-outline { border: none; }*/
+table.jqplot-table-legend { border-collapse: collapse; }
 tr.jqplot-table-legend td { padding: 2px; }
-.legend-row-highlighted { background-color: #666666; }
-.legend-text-highlighted { color: #ffffff; }
+.legend-row-highlighted { background-color: #ddd; }
