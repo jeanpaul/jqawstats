@@ -53,10 +53,10 @@ oSubMenu.Pages      = { "Top Page Views"                         : "pages.topPag
                         "Top Bandwidth"                          : "pages.topBW",
                         "Top Entry Pages"                        : "pages.topEntry",
                         "Top Exit Pages"                         : "pages.topExit" };
-oSubMenu.Searches   = { "Keywords"                               : "searches.keywords",
-                        "Keyphrases"                             : "searches.keyphrases",
-                        "Keywords Tag Cloud"                     : "searches.keywordcloud",
-                        "Keyphrases Tag Cloud"                   : "searches.keyphrasecloud" };
+oSubMenu.Searches   = { "Keyphrases"                             : "searches.keyphrases",
+                        "Keywords"                               : "searches.keywords",
+                        "Keyphrases Tag Cloud"                   : "searches.keyphrasecloud",
+                        "Keywords Tag Cloud"                     : "searches.keywordcloud" };
 oSubMenu.Status     = { "Status Codes"                           : "status",
                         "File Not Found URLs"                    : "status.404" };
 oSubMenu.ThisMonth = {  "Overview"                               : "thismonth.all",

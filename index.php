@@ -243,7 +243,7 @@
           <li id="tabpages"><span onclick="ChangeTab(this, 'pages.topPages')"><?php echo Lang("Pages"); ?></span></li>
           <li id="tabpagerefs"><span onclick="ChangeTab(this, 'pagerefs.se')"><?php echo Lang("Referrers"); ?></span></li>
           <li id="tabrobots"><span onclick="ChangeTab(this, 'robots')"><?php echo Lang("Spiders"); ?></span></li>
-          <li id="tabsearches"><span onclick="ChangeTab(this, 'searches.keywords')"><?php echo Lang("Searches"); ?></span></li>
+          <li id="tabsearches"><span onclick="ChangeTab(this, 'searches.keyphrases')"><?php echo Lang("Searches"); ?></span></li>
           <li id="tabsession"><span onclick="ChangeTab(this, 'session')"><?php echo Lang("Sessions"); ?></span></li>
           <li id="tabstatus"><span onclick="ChangeTab(this, 'status')"><?php echo Lang("Status"); ?></span></li>
         </ul>
