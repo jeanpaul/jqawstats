@@ -246,7 +246,7 @@ function DrawGraph_jq(aItem, aValue, aInitial, sStyle, width) {
 				series: [{pointLabels: {show: aInitial.length, labels: aInitial}}],
 				axes: axes,
 				canvasOverlay: { show: true, objects: objects },
-				highlighter: { showMarker: sStyle != "bar", show: true, tooltipAxes: sStyle == 'allmonths' ? 'xy' : 'y', tooltipLocation: sStyle == 'bar' ? 'w' : 'n'},
+				highlighter: { showMarker: (sStyle != "bar" && sStyle != "bar-empty"), show: true, tooltipAxes: sStyle == 'allmonths' ? 'xy' : 'y', tooltipLocation: sStyle == 'bar' ? 'w' : 'n'},
 				gridPadding: gridPadding,
 			});
 
