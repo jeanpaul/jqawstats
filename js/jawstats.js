@@ -101,17 +101,6 @@ function DisplayBandwidth(iBW) {
   return NumberFormat(iBW, 1) + "G";
 }
 
-function DrawGraph_swf(aItem, aValue, aInitial, sStyle) {
-  var oGraph = new SWFObject("swf/" + sStyle + "_graph.swf", "SWFgraph", "100%", "100%", "8", "#ffffff");
-  oGraph.addParam("wmode", "transparent");
-  oGraph.addVariable("sItem", aItem.join(","));
-  oGraph.addVariable("sValue", aValue.join(","));
-  oGraph.addVariable("sInitial", aInitial.join(","));
-  oGraph.addVariable("sColor", g_sColor);
-  oGraph.addVariable("sShadowColor", g_sShadowColor);
-  oGraph.write("graph");
-}
-
 function zip(arrays) {
 	return arrays[0].map(function(_,i){
 		return arrays.map(function(array){return array[i]})
@@ -263,10 +252,7 @@ function DrawGraph(aItem, aValue, aInitial, sStyle, width) {
 	g_aValue = aValue;
 	g_aInitial = aInitial;
 	g_sStyle = sStyle;
-	//DrawGraph_swf(aItem, aValue, aInitial, sStyle);
 	DrawGraph_jq(aItem, aValue, aInitial, sStyle, width);
-
-	console.log("To change back to SWF: DrawGraph_swf(g_aItem, g_aValue, g_aInitial, g_sStyle);");
 }
 
 function DrawGraph_AllMonths() {
@@ -476,17 +462,6 @@ case "searches":
 	});
 }
 
-function DrawPie_swf(iTotal, aItem, aValue) {
-  var oPie = new SWFObject("swf/pie.swf", "SWFpie", "100%", "100%", "8", "#ffffff");
-  oPie.addParam("wmode", "transparent");
-  oPie.addVariable("sTotal", iTotal);
-  oPie.addVariable("sItem", encodeURIComponent(aItem.join(",")));
-  oPie.addVariable("sValue", encodeURIComponent(aValue.join(",")));
-  oPie.addVariable("sColor", g_sColor);
-  oPie.addVariable("sShadowColor", g_sShadowColor);
-  oPie.write("pie");
-}
-
 function DrawPie_jq(iTotal, aItem, aValue) {
 	if (aValue.length == 0)
 		return;
@@ -545,10 +520,7 @@ function DrawPie(iTotal, aItem, aValue) {
 	g_aItem = aItem;
 	g_aValue = aValue;
 	g_iTotal = iTotal;
-	//DrawPie_swf(iTotal, aItem, aValue);
 	DrawPie_jq(iTotal, aItem, aValue);
-
-	console.log("To change back to SWF: DrawPie_swf(g_iTotal, g_aItem, g_aValue);");
 }
 
 function DrawPie_Browser(sPage) {

@@ -112,26 +112,18 @@
   <title><?php echo str_replace("[SITE]", GetSiteName(), str_replace("[MONTH]", Lang(date("F", $g_aLogFiles[$g_iThisLog][0])), str_replace("[YEAR]", date("Y", $g_aLogFiles[$g_iThisLog][0]), Lang("Statistics for [SITE] in [MONTH] [YEAR]")))) ?></title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <link rel="stylesheet" href="themes/<?php echo $g_aConfig["theme"] ?>/style.css" type="text/css" />
-  <script type="text/javascript" src="js/packed.js?<?php echo $gc_sJavascriptVersion ?>"></script>
-
-  <!--
-  <script type="text/javascript" src="js/jquery.js"></script>
-  <script type="text/javascript" src="js/jquery.tablesorter.js"></script>
-  <script type="text/javascript" src="js/swfobject.js"></script>
-  -->
-
-  <script type="text/javascript" src="js/constants.js?<?php echo $gc_sJavascriptVersion ?>"></script>
-  <script type="text/javascript" src="js/jawstats.js?<?php echo $gc_sJavascriptVersion ?>"></script>
   <script type="text/javascript" src="js/jquery.min.js"></script>
   <script type="text/javascript" src="js/jquery.tablesorter.js"></script>
-  <script language="javascript" type="text/javascript" src="js/jqplot/jquery.jqplot.min.js"></script>
-  <script type="text/javascript" language="javascript" src="js/jqplot/plugins/jqplot.categoryAxisRenderer.js"></script>
+  <script type="text/javascript" src="js/jqplot/jquery.jqplot.min.js"></script>
+  <script type="text/javascript" src="js/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
   <script type="text/javascript" src="js/jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
-  <script type="text/javascript" src="js/jqplot/plugins/jqplot.highlighter.js"></script>
-  <script type="text/javascript" src="js/jqplot/plugins/jqplot.canvasOverlay.js"></script>
+  <script type="text/javascript" src="js/jqplot/plugins/jqplot.highlighter.min.js"></script>
+  <script type="text/javascript" src="js/jqplot/plugins/jqplot.canvasOverlay.min.js"></script>
   <script type="text/javascript" src="js/jqplot/plugins/jqplot.barRenderer.min.js"></script>
   <script type="text/javascript" src="js/jqplot/plugins/jqplot.pieRenderer.min.js"></script>
   <script type="text/javascript" src="js/jqplot/plugins/jqplot.pointLabels.min.js"></script>
+  <script type="text/javascript" src="js/constants.js?<?php echo $gc_sJavascriptVersion ?>"></script>
+  <script type="text/javascript" src="js/jawstats.js?<?php echo $gc_sJavascriptVersion ?>"></script>
   <link rel="stylesheet" type="text/css" href="js/jqplot/jquery.jqplot.css" />
   <link rel="stylesheet" type="text/css" href="css/jsawstats.css" />
   <script type="text/javascript">
