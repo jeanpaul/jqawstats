@@ -33,6 +33,8 @@ var oPaging = {
   oKeywords:{ iCurrPage:0, iRowCount:0, iRowsPerPage:15, sSort:"freqDESC" },
   oKeyphrases:{ iCurrPage:0, iRowCount:0, iRowsPerPage:15, sSort:"freqDESC" }
 };
+var graphKeys = ["Visitors", "Uniques", "Pages", "Hits", "Bandwidth"];
+var graphKey = graphKeys[0];
 
 // jQuery methods
 $(document).ready(function() {
@@ -261,7 +263,7 @@ function DrawGraph_AllMonths() {
   for (var iIndex in oStatistics.oAllMonths.aData) {
     aItem.push(oStatistics.oAllMonths.aData[iIndex].dtDate.getFullYear() + "-" +
                (oStatistics.oAllMonths.aData[iIndex].dtDate.getMonth() + 1) + "-01 00:00:00");
-    aValue.push(oStatistics.oAllMonths.aData[iIndex].iVisits);
+    aValue.push(graphKeyValue(oStatistics.oAllMonths.aData[iIndex]));
   }
   DrawGraph(aItem, aValue, [], "allmonths");
 }
@@ -289,7 +291,8 @@ function DrawGraph_ThisMonth() {
   // update values we know about
   for (var iIndex in oStatistics.oThisMonth.aData) {
     iDay = (oStatistics.oThisMonth.aData[iIndex].dtDate.getDate() - 1);
-    aValue[iDay] = oStatistics.oThisMonth.aData[iIndex].iVisits;
+    aValue[iDay] = graphKeyValue(oStatistics.oThisMonth.aData[iIndex]);
+
   }
   DrawGraph(aItem, aValue, aInitial, "bar");
 }
@@ -984,6 +987,15 @@ function DrawSubMenu(sMenu, sSelected) {
     }
   }
   return ("<div id=\"submenu\">" + aMenu.join(" | ") + "</div>");
+}
+
+function DrawSubMenuRight(type)
+{
+	var links = "&nbsp;";
+	if (type == "links")
+		links = graphKeyLinks();
+
+	return "<div id=\"submenuright\">" + links + "</div>";
 }
 
 function DrawTable_AllMonths(sPage) {
@@ -2061,6 +2073,7 @@ function Misc_ThisMonthCalendar(sHeadline, sSubMenu, sDataItem) {
   // apply content
   $("#content").html("<h2>" + Lang(sHeadline) + "</h2>" +
                      DrawSubMenu("thismonth", sSubMenu) +
+                     DrawSubMenuRight("") +
                      "<div class=\"tableFull\">" + sHTML + "</div>");
 
   // populate daily values
@@ -2154,11 +2167,13 @@ function PageLayout_AllMonths(sPage) {
     case "all":
       var sHTML = "<h2>" + Lang("Visitors each Month") + "</h2>" +
                   DrawSubMenu("allmonths", "Visitors each Month") +
+                  DrawSubMenuRight("links") +
                   "<div id=\"graph\" class=\"graph\">&nbsp;</div>";
       break;
     case "year":
       var sHTML = "<h2>" + Lang("Visitors each Year") + "</h2>" +
-                  DrawSubMenu("allmonths", "Visitors each Year");
+                  DrawSubMenu("allmonths", "Visitors each Year") +
+                  DrawSubMenuRight("");
       break;
   }
   sHTML += "<div class=\"tableFull\">" + aTable[1] + "</div>";
@@ -2178,16 +2193,19 @@ function PageLayout_Browser(sPage) {
     case "family":
       var sHTML = "<h2>" + Lang("Browser Families") + "</h2>" +
                   DrawSubMenu("browser", "Browser Families") +
+                  DrawSubMenuRight("") +
                   "<div id=\"pie\" class=\"pie\">&nbsp;</div><div class=\"tablePie\">" + aTable[1] + "</div>";
       break;
     case "all":
       var sHTML = "<h2>" + Lang("All Browsers") + "</h2>" +
                   DrawSubMenu("browser", "All Browsers") +
+                  DrawSubMenuRight("") +
                   "<div id=\"pie\" class=\"pie\">&nbsp;</div><div class=\"tablePie\">" + aTable[1] + "</div>";
       break;
     default:
       var sHTML = "<h2>" + Lang("Browser Family") + ": " + gc_aBrowserFamilyCaption[sPage] + "</h2>" +
                   DrawSubMenu("browser", "") +
+                  DrawSubMenuRight("") +
                   "<div id=\"pie\" class=\"pie\">&nbsp;</div><div class=\"tablePie\">" + aTable[1] + "</div>";
   }
   $("#content").html(sHTML);
@@ -2204,6 +2222,7 @@ function PageLayout_Country(sPage) {
       var aTable = DrawTable_Country();
       var sHTML = "<h2>" + Lang("Visitors by Country") + "</h2>" +
                   DrawSubMenu("country", "Countries") +
+                  DrawSubMenuRight("") +
                   "<div id=\"pie\" class=\"pie\">&nbsp;</div><div class=\"tablePie\">" +
                   aTable[1] +
                   "</div>";
@@ -2216,6 +2235,7 @@ function PageLayout_Country(sPage) {
     case "continent":
       var sHTML = "<h2>" + Lang("Visitors by Continent") + "</h2>" +
                   DrawSubMenu("country", "Continents") +
+                  DrawSubMenuRight("") +
                   "<div id=\"pie\" class=\"pie\">&nbsp;</div><div class=\"tablePie\">" +
                   DrawTable_CountryContinent() +
                   "</div>";
@@ -2231,6 +2251,7 @@ function PageLayout_Country(sPage) {
       }
       var aTable = DrawTable_Country(sPage);
       sHTML += DrawSubMenu("country", sPage) +
+               DrawSubMenuRight("") +
                "<div id=\"pie\" class=\"pie\">&nbsp;</div><div class=\"tablePie\">" +
                aTable[1] + "</div>";
       $("#content").html(sHTML);
@@ -2260,16 +2281,19 @@ function PageLayout_OperatingSystems(sPage) {
     case "family":
       var sHTML = "<h2>" + Lang("Operating System Families") + "</h2>" +
                   DrawSubMenu("os", "Operating System Families") +
+                  DrawSubMenuRight("") +
                   "<div id=\"pie\" class=\"pie\">&nbsp;</div><div class=\"tablePie\">" + aTable[1] + "</div>";
       break;
     case "all":
       var sHTML = "<h2>" + Lang("Operating Systems") + "</h2>" +
                   DrawSubMenu("os", "All Operating Systems") +
+                  DrawSubMenuRight("") +
                   "<div id=\"pie\" class=\"pie\">&nbsp;</div><div class=\"tablePie\">" + aTable[1] + "</div>";
       break;
     default:
       var sHTML = "<h2>" + Lang("Operating System Family") + ": " + gc_aOSFamilyCaption[sPage] + "</h2>" +
                   DrawSubMenu("os", "") +
+                  DrawSubMenuRight("") +
                   "<div id=\"pie\" class=\"pie\">&nbsp;</div><div class=\"tablePie\">" + aTable[1] + "</div>";
   }
   $("#content").html(sHTML);
@@ -2286,24 +2310,28 @@ function PageLayout_PageRefs(sPage) {
       var aTable = DrawTable_PageRefs("all");
       var sHTML = "<h2>" + Lang("Referring Pages") + "</h2>" +
                   DrawSubMenu("pagerefs", "All Referrers") +
+                  DrawSubMenuRight("") +
                   "<div id=\"pie\" class=\"pie\">&nbsp;</div><div class=\"tablePie\">" + aTable[1] + "</div>";
       break;
     case "domains":
       var aTable = DrawTable_PageRefs("domains");
       var sHTML = "<h2>" + Lang("Referring Domains") + "</h2>" +
                   DrawSubMenu("pagerefs", "Referring Domains") +
+                  DrawSubMenuRight("") +
                   "<div id=\"pie\" class=\"pie\">&nbsp;</div><div class=\"tablePie\">" + aTable[1] + "</div>";
       break;
     case "top10":
       var aTable = DrawTable_PageRefs("top10");
       var sHTML = "<h2>" + Lang("Referring Pages") + "</h2>" +
                   DrawSubMenu("pagerefs", "Top 10 Referrers") +
+                  DrawSubMenuRight("") +
                   "<div id=\"pie\" class=\"pie\">&nbsp;</div><div class=\"tablePie\">" + aTable[1] + "</div>";
       break;
     case "top50":
       var aTable = DrawTable_PageRefs("top50");
       var sHTML = "<h2>" + Lang("Referring Pages") + "</h2>" +
                   DrawSubMenu("pagerefs", "Top 50 Referrers") +
+                  DrawSubMenuRight("") +
                   "<div id=\"pie\" class=\"pie\">&nbsp;</div><div class=\"tablePie\">" + aTable[1] + "</div>";
       break;
   }
@@ -2319,6 +2347,7 @@ function PageLayout_PageRefsSE() {
   var aTable = DrawTable_PageRefsSE();
   var sHTML = "<h2>" + Lang("Referring Search Engines") + "</h2>" +
               DrawSubMenu("pagerefs", "Search Engines") +
+              DrawSubMenuRight("") +
               "<div id=\"pie\" class=\"pie\">&nbsp;</div><div class=\"tablePie\">" + aTable[1] + "</div>";
   $("#content").html(sHTML);
   if (aTable[0] == true) {
@@ -2365,6 +2394,7 @@ function PageLayout_Pages(sPage) {
   var aTable = DrawTable_Pages(aData);
   var sHTML = "<h2>" + Lang("Page Views") + "</h2>" +
               DrawSubMenu("pages", sSubMenu) +
+              DrawSubMenuRight("") +
               "<div id=\"pie\" class=\"pie\">&nbsp;</div><div class=\"tablePie\">" + aTable[1] + "</div>";
   $("#content").html(sHTML);
   if (aTable[0] == true) {
@@ -2390,12 +2420,14 @@ function PageLayout_Searches(sPage) {
     case "keyphrasecloud":
       var sHTML = "<h2>" + Lang("Keyphrases Tag Cloud") + "</h2>" +
                   DrawSubMenu("searches", "Keyphrases Tag Cloud") +
+                  DrawSubMenuRight("") +
                   "<div class=\"tagcloud\">" + TagCloud("sPhrase", oStatistics.oKeyphrases, 75) + "</div>";
       $("#content").html(sHTML);
       break;
     case "keyphrases":
       var sHTML = "<h2>" + Lang("Keyphrases") + "</h2>" +
                   DrawSubMenu("searches", "Keyphrases") +
+                  DrawSubMenuRight("") +
                   "<div id=\"pie\" class=\"pie\">&nbsp;</div><div class=\"tablePie\">" + Paging_Keyphrases() + "</div>";
       $("#content").html(sHTML);
       DrawPie_Keyphrases();
@@ -2403,12 +2435,14 @@ function PageLayout_Searches(sPage) {
     case "keywordcloud":
       var sHTML = "<h2>" + Lang("Keywords Tag Cloud") + "</h2>" +
                   DrawSubMenu("searches", "Keywords Tag Cloud") +
+                  DrawSubMenuRight("") +
                   "<div class=\"tagcloud\">" + TagCloud("sWord", oStatistics.oKeywords, 150) + "</div>";
       $("#content").html(sHTML);
       break;
     case "keywords":
       var sHTML = "<h2>" + Lang("Keywords") + "</h2>" +
                   DrawSubMenu("searches", "Keywords") +
+                  DrawSubMenuRight("") +
                   "<div id=\"pie\" class=\"pie\">&nbsp;</div><div class=\"tablePie\">" + Paging_Keywords() + "</div>";
       $("#content").html(sHTML);
       DrawPie_Keywords();
@@ -2435,6 +2469,7 @@ function PageLayout_Status(sPage) {
       var aTable = DrawTable_Status404();
       var sHTML = "<h2>" + Lang("HTTP Status Codes") + ": 404s</h2>" +
                   DrawSubMenu("status", "File Not Found URLs") +
+                  DrawSubMenuRight("") +
                   "<div id=\"pie\" class=\"pie\">&nbsp;</div><div class=\"tablePie\">" + aTable[1] + "</div>";
       $("#content").html(sHTML);
       if (aTable[0] == true) {
@@ -2446,6 +2481,7 @@ function PageLayout_Status(sPage) {
       var aTable = DrawTable_Status();
       var sHTML = "<h2>" + Lang("HTTP Status Codes") + "</h2>" +
                   DrawSubMenu("status", "Status Codes") +
+                  DrawSubMenuRight("") +
                   "<div id=\"pie\" class=\"pie\">&nbsp;</div><div class=\"tablePie\">" + aTable[1] + "</div>";
       $("#content").html(sHTML);
       if (aTable[0] == true) {
@@ -2456,12 +2492,45 @@ function PageLayout_Status(sPage) {
   $("#content").fadeIn(g_iFadeSpeed);
 }
 
+function redrawGraphKey(newGraphKey)
+{
+	graphKey = newGraphKey;
+	DrawPage(g_sCurrentView);
+}
+
+function graphKeyLinks()
+{
+	return $.map(graphKeys, function(key) {
+			var submenu = (key == graphKey) ? "submenuselect" : "submenu";
+			return "<span class=\"" + submenu + "\" onclick=\"javascript: redrawGraphKey('" + key + "')\">" +
+			key + "</span>";
+		}).join(" | ");
+}
+
+function graphKeyValue(aData)
+{
+	switch (graphKey) {
+		case "Uniques":
+			return aData.iUniques;
+		case "Hits":
+			return aData.iHits;
+		case "Pages":
+			return aData.iPages;
+		case "Bandwidth":
+			return aData.iBW;
+		case "Visitors":
+		default:
+			return aData.iVisits;
+	}
+}
+
 function PageLayout_ThisMonth(sPage) {
   switch (sPage) {
     case "all":
       var aTable = DrawTable_ThisMonth();
       var sHTML = "<h2>" + Lang("Visitors this Month") + "</h2>" +
                   DrawSubMenu("thismonth", "Overview") +
+                  DrawSubMenuRight("links") +
                   "<div id=\"graph\" class=\"graph\">&nbsp;</div><div class=\"tableFull\">" + aTable[1] + "</div>";
       $("#content").html(sHTML);
       if (aTable[0] == true) {
