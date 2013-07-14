@@ -36,6 +36,7 @@ var oPaging = {
 var graphKeys = {
 	"allmonths": ["Visitors", "Uniques", "Pages", "Hits", "Bandwidth"],
 	"thismonth": ["Visitors", "Pages", "Hits", "Bandwidth"],
+	"time": ["Pages", "Hits", "Bandwidth"],
 };
 var graphKey = "Visitors";
 
@@ -306,7 +307,7 @@ function DrawGraph_Time() {
   for (var iRow in oStatistics.oTime.aData) {
     oRow = oStatistics.oTime.aData[iRow];
     aItem.push(oRow.iHour + 1);
-    aValue.push(oRow.iPages);
+    aValue.push(graphKeyValue(oRow));
   }
   // Add 'zero' hour == last item to make the graph 'loop'
   aItem.unshift(0);
@@ -2172,7 +2173,7 @@ function PageLayout_AllMonths(sPage) {
   var aTable = DrawTable_AllMonths(sPage);
   switch (sPage) {
     case "all":
-      var sHTML = "<h2>" + Lang("Visitors each Month") + "</h2>" +
+      var sHTML = "<h2>" + graphKey + Lang(" each Month") + "</h2>" +
                   DrawSubMenu("allmonths", "Visitors each Month") +
                   DrawSubMenuRight("allmonths") +
                   "<div id=\"graph\" class=\"graph\">&nbsp;</div>";
@@ -2535,7 +2536,7 @@ function PageLayout_ThisMonth(sPage) {
   switch (sPage) {
     case "all":
       var aTable = DrawTable_ThisMonth();
-      var sHTML = "<h2>" + Lang("Visitors this Month") + "</h2>" +
+      var sHTML = "<h2>" + Lang(graphKey + " this Month") + "</h2>" +
                   DrawSubMenu("thismonth", "Overview") +
                   DrawSubMenuRight("thismonth") +
                   "<div id=\"graph\" class=\"graph\">&nbsp;</div><div class=\"tableFull\">" + aTable[1] + "</div>";
@@ -2563,7 +2564,8 @@ function PageLayout_ThisMonth(sPage) {
 
 function PageLayout_Time(sPage) {
   var aTable = DrawTable_Time(sPage);
-  var sHTML = "<h2>" + Lang("Visitors over 24 Hours") + "</h2>" +
+  var sHTML = "<h2>" + graphKey + Lang(" over 24 Hours") + "</h2>" +
+              DrawSubMenuRight("time") +
               "<div id=\"graph\" class=\"graph\">&nbsp;</div>" +
               "<div class=\"tableFull\">" + aTable[1] + "</div>";
   $("#content").html(sHTML);
