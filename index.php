@@ -125,7 +125,7 @@
   <script type="text/javascript" src="js/constants.js?<?php echo $gc_sJavascriptVersion ?>"></script>
   <script type="text/javascript" src="js/jawstats.js?<?php echo $gc_sJavascriptVersion ?>"></script>
   <link rel="stylesheet" type="text/css" href="js/jqplot/jquery.jqplot.css" />
-  <link rel="stylesheet" type="text/css" href="css/jsawstats.css" />
+  <link rel="stylesheet" type="text/css" href="css/jqawstats.css" />
   <script type="text/javascript">
     var g_sConfig = "<?php echo $g_sConfig ?>";
     var g_iYear = <?php echo date("Y", $g_aLogFiles[$g_iThisLog][0]) ?>;
