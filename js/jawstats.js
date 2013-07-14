@@ -33,8 +33,11 @@ var oPaging = {
   oKeywords:{ iCurrPage:0, iRowCount:0, iRowsPerPage:15, sSort:"freqDESC" },
   oKeyphrases:{ iCurrPage:0, iRowCount:0, iRowsPerPage:15, sSort:"freqDESC" }
 };
-var graphKeys = ["Visitors", "Uniques", "Pages", "Hits", "Bandwidth"];
-var graphKey = graphKeys[0];
+var graphKeys = {
+	"allmonths": ["Visitors", "Uniques", "Pages", "Hits", "Bandwidth"],
+	"thismonth": ["Visitors", "Pages", "Hits", "Bandwidth"],
+};
+var graphKey = "Visitors";
 
 // jQuery methods
 $(document).ready(function() {
@@ -315,6 +318,9 @@ function DrawPage(sPage) {
 	$("#content").fadeOut(g_iFadeSpeed, function() {
 	  g_sCurrentView = sPage;
 	  var aPage = sPage.split(".");
+    if (graphKeys[aPage[0]] && graphKeys[aPage[0]].indexOf(graphKey) == -1) {
+      graphKey = graphKeys[aPage[0]][0];
+    }
     switch (aPage[0]) {
       case "allmonths":
         if (typeof oStatistics.oAllMonths == "undefined") {
@@ -992,8 +998,9 @@ function DrawSubMenu(sMenu, sSelected) {
 function DrawSubMenuRight(type)
 {
 	var links = "&nbsp;";
-	if (type == "links")
-		links = graphKeyLinks();
+	if (graphKeys[type]) {
+		links = graphKeyLinks(graphKeys[type]);
+	}
 
 	return "<div id=\"submenuright\">" + links + "</div>";
 }
@@ -2167,7 +2174,7 @@ function PageLayout_AllMonths(sPage) {
     case "all":
       var sHTML = "<h2>" + Lang("Visitors each Month") + "</h2>" +
                   DrawSubMenu("allmonths", "Visitors each Month") +
-                  DrawSubMenuRight("links") +
+                  DrawSubMenuRight("allmonths") +
                   "<div id=\"graph\" class=\"graph\">&nbsp;</div>";
       break;
     case "year":
@@ -2498,9 +2505,9 @@ function redrawGraphKey(newGraphKey)
 	DrawPage(g_sCurrentView);
 }
 
-function graphKeyLinks()
+function graphKeyLinks(keys)
 {
-	return $.map(graphKeys, function(key) {
+	return $.map(keys, function(key) {
 			var submenu = (key == graphKey) ? "submenuselect" : "submenu";
 			return "<span class=\"" + submenu + "\" onclick=\"javascript: redrawGraphKey('" + key + "')\">" +
 			key + "</span>";
@@ -2530,7 +2537,7 @@ function PageLayout_ThisMonth(sPage) {
       var aTable = DrawTable_ThisMonth();
       var sHTML = "<h2>" + Lang("Visitors this Month") + "</h2>" +
                   DrawSubMenu("thismonth", "Overview") +
-                  DrawSubMenuRight("links") +
+                  DrawSubMenuRight("thismonth") +
                   "<div id=\"graph\" class=\"graph\">&nbsp;</div><div class=\"tableFull\">" + aTable[1] + "</div>";
       $("#content").html(sHTML);
       if (aTable[0] == true) {
