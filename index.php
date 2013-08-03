@@ -258,7 +258,7 @@
 
 </html>
 
-<?
+<?php
 
   // output booleans for javascript
   function BooleanToText($bValue) {
