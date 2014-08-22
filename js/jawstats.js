@@ -113,6 +113,68 @@ function zip(arrays) {
 	});
 }
 
+function unitFormatter(format, val) {
+	if (!$.isNumeric(val)) {
+		return val;
+	}
+	var parts = format.split(';', 2);
+	var divider = parts[0];
+	var fmt = parts[1];
+	var units;
+	switch (divider) {
+		case "1000":
+			units = ["", "k", "M", "G", "T", "P", "E"];
+			break;
+		case "1024":
+			units = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"];
+			break;
+		default:
+			units = ["", "?"];
+	}
+	var unit = 0;
+	while (unit < units.length && val >= divider) {
+		val /= divider;
+		unit++;
+	}
+	return $.jqplot.sprintf(fmt, val) + units[unit];
+}
+
+/* The following is a bit tricky: we are not happy with jqplot's
+ * default max range calculation, so we wrote our own. The result
+ * is max values of 'round' numbers, but not too far from the actual
+ * max to create lots of empty space. The algorith below is written in
+ * separate statements for ease-of-reading.
+ */
+function niceMax(realmax, margin, scale) {
+	var order = 0;
+
+	// Take the max value and add some margin
+	var maxVal = realmax * (1.0 + margin);
+
+	// Lower the order to < 1K, we raise it after
+	// (this is actuall only necessary for scale != 1000)
+	while (maxVal > scale) {
+		maxVal /= scale;
+		order++;
+	}
+
+	// Get the order of magnitude (base 10)
+	var log10max = Math.log(maxVal) / Math.LN10;
+	// floor the order of magnitude and raise it to the power of 10
+	var factor = Math.pow(10, Math.floor(log10max));
+	// final step, use the raised value and the max value to get the first
+	// digit and multiply that with the raised value to get a nice round
+	// number (one that is above the maxVal).
+	var max = factor * Math.ceil(maxVal / factor);
+
+	// raise the order back, if necessary
+	while (order > 0) {
+		max *= scale;
+		order--;
+	}
+	return max;
+}
+
 function DrawGraph_jq(aItem, aValue, aInitial, sStyle, width) {
 	if (aValue.length == 0)
 		return;
@@ -176,32 +238,25 @@ function DrawGraph_jq(aItem, aValue, aInitial, sStyle, width) {
 		}}
 	];
 
+	if (graphKey == "Bandwidth") {
+		scale = "1024";
+	} else {
+		scale = "1000";
+	}
+	yTickOpts = { formatString: scale + ";%d ", formatter: unitFormatter };
+
 	if (sStyle == "time") {
+		var max = niceMax(Math.max.apply(null, aValue), 0.1, scale);
+
 		axes = {
 			xaxis: {pad: 0, tickInterval: 1},
-			yaxis: {pad: 0}
+			yaxis: {min: 0, max: max, pad: 0, tickOptions: yTickOpts}
 		}
 		series = [zipped];
 	} else if (sStyle == "allmonths") {
 		xTickOpts = { formatString: "%b '%y" };
-		yTickOpts = { formatString: "%d" };
 
-		/* The following is a bit tricky: we are not happy with jqplot's
-		 * default max range calculation, so we wrote our own. The result
-		 * is max values of 'round' numbers, but not too far from the actual
-		 * max to create lots of empty space. The algorith below is written in
-		 * separate statements for ease-of-reading.
-		 */
-		// Take the max value and add some padding
-		var maxVal = Math.max.apply(null, aValue) * 1.1;
-		// Get the order of magnitude (base 10)
-		var log10max = Math.log(maxVal) / Math.LN10;
-		// floor the order of magnitude and raise it to the power of 10
-		var factor = Math.pow(10, Math.floor(log10max));
-		// final step, use the raised value and the max value to get the first
-		// digit and multiply that with the raised value to get a nice round
-		// number (one that is above the maxVal).
-		var max = factor * Math.ceil(maxVal / factor);
+		var max = niceMax(Math.max.apply(null, aValue), 0.1, scale);
 
 		axes = {
 			xaxis: {renderer: $.jqplot.DateAxisRenderer, tickOptions: xTickOpts},
@@ -209,21 +264,11 @@ function DrawGraph_jq(aItem, aValue, aInitial, sStyle, width) {
 		}
 		series = [zipped];
 	} else {
-		// Take the max value and add some padding (more than allmonths because
-		// there is a label above the bar)
-		var maxVal = Math.max.apply(null, aValue) * 1.3;
-		// Get the order of magnitude (base 10)
-		var log10max = Math.log(maxVal) / Math.LN10;
-		// floor the order of magnitude and raise it to the power of 10
-		var factor = Math.pow(10, Math.floor(log10max));
-		// final step, use the raised value and the max value to get the first
-		// digit and multiply that with the raised value to get a nice round
-		// number (one that is above the maxVal).
-		var max = factor * Math.ceil(maxVal / factor);
+		var max = niceMax(Math.max.apply(null, aValue), 0.3, scale);
 
 		axes = {
 			xaxis: {renderer: $.jqplot.CategoryAxisRenderer, ticks: aItem},
-			yaxis: {min: 0, max: max},
+			yaxis: {min: 0, max: max, tickOptions: yTickOpts},
 		}
 		if (sStyle == "bar-empty") {
 			axes['yaxis']['showTickMarks'] = false;
